@@ -1,4 +1,4 @@
-package com.example.internshiptestrussianpost;
+package dev.iskandev.internshiptestrussianpost;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
