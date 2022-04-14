@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -76,8 +77,19 @@ public class AddressServiceImpl implements AddressService {
      * {@inheritDoc}
      */
     @Override
-    public List<Address> getAddresses() {
-        return repository.findAll();
+    public List<Address> getAddresses(int page, int size) {
+        var addresses = repository.findAll();
+        int fromIndex = page * size; // index of first entry on page
+        int toIndex = fromIndex + size; // index of last entry on page
+
+        // if there are no more entries for such page number => return empty page
+        if (fromIndex > addresses.size())
+            return new ArrayList<>();
+        // if the last page contains fewer entries than page's size => shrink its size
+        if (toIndex > addresses.size())
+            toIndex = addresses.size();
+
+        return addresses.subList(fromIndex, toIndex);
     }
 
     /**

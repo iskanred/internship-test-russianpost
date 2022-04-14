@@ -35,10 +35,12 @@ public interface AddressService {
     void removeAddressById(UUID id) throws AddressNotFoundException;
 
     /**
-     * Return all stored addresses.
-     * @return list of all stored addresses
+     * Return paginated list of stored addresses.
+     * @param page is number of page to return
+     * @param size is the maximum number of records on page
+     * @return paginated list of stored addresses
      */
-    List<Address> getAddresses();
+    List<Address> getAddresses(int page, int size);
 
     /**
      * Create new address with specified parameters and store it in repository.

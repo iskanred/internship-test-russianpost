@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -87,19 +88,31 @@ public class AddressController {
     }
 
     /**
-     * Return all stored addresses.
+     * Return paginated list of all existing addresses.
      * <br>Possible response status codes:<br>
      * <ol>
      *     <li>200 OK - if operation has been performed successfully</li>
      *     <li>400 Bad Request - if input data is not valid</li>
      *     <li>500 Internal Server Error</li>
      * </ol>
-     * @return list of all stored addresses
+     * @param page is number of page to show
+     * @param pageSize is the maximum number of records on page
+     * @return paginated list of all existing addresses
+     * @throws ResponseStatusException with code:
+     *  <ul>
+     *      <li>400 Bad Request - if some request parameters have incorrect values</li>
+     *  </ul>
      */
     @GetMapping
-    public List<Address> getAddresses() {
-        logger.info("GET /v1.0/addresses request for getting all addresses with is received");
-        return service.getAddresses();
+    public List<Address> getAddresses(@RequestParam(name = "page", defaultValue = "0") int page,
+                                      @RequestParam(name = "size", defaultValue = "20") int pageSize) throws ResponseStatusException {
+        logger.info("GET /v1.0/addresses request for getting all addresses is received with parameters page = " + page + "; size = " + pageSize);
+        if (pageSize < 1 || pageSize > 1000) {
+            var exception = new ResponseStatusException(HttpStatus.BAD_REQUEST, "Size of page must be in range [1, 1000], but got: " + pageSize);
+            logger.info("Incorrect size parameter", exception);
+            throw exception;
+        }
+        return service.getAddresses(page, pageSize);
     }
 
     /**
@@ -118,7 +131,7 @@ public class AddressController {
     @PostMapping(consumes = "application/json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void createAddress(@RequestBody Address address) throws AddressExistConflictException, AddressBadRequestException {
-        logger.info("POST /v1.0/addresses request for creating a new address with is received");
+        logger.info("POST /v1.0/addresses request for creating a new address is received");
         service.createAddress(address);
     }
 }
