@@ -43,7 +43,7 @@ public class AddressController {
      */
     @GetMapping("/{id}")
     public Address getAddressById(@PathVariable UUID id) throws AddressNotFoundException {
-        logger.info("GET /v1.0/addresses/{id} request for getting the address with id " + id + " is received");
+        logger.info("GET /addresses/{id} request for getting the address with id " + id + " is received");
         return service.getAddressById(id);
     }
 
@@ -64,7 +64,7 @@ public class AddressController {
     @PutMapping(value = "/{id}", consumes = "application/json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateAddressById(@PathVariable UUID id, @RequestBody Address address) throws AddressNotFoundException, AddressBadRequestException {
-        logger.info("PUT /v1.0/addresses/{id} request for updating the address with id " + id + " is received");
+        logger.info("PUT /addresses/{id} request for updating the address with id " + id + " is received");
         service.updateAddressById(id, address);
     }
 
@@ -83,7 +83,7 @@ public class AddressController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeAddressById(@PathVariable UUID id) throws AddressNotFoundException {
-        logger.info("DELETE /v1.0/addresses/{id} request for removing the address with id " + id + " is received");
+        logger.info("DELETE /addresses/{id} request for removing the address with id " + id + " is received");
         service.removeAddressById(id);
     }
 
@@ -106,7 +106,7 @@ public class AddressController {
     @GetMapping
     public List<Address> getAddresses(@RequestParam(name = "page", defaultValue = "0") int page,
                                       @RequestParam(name = "size", defaultValue = "20") int pageSize) throws ResponseStatusException {
-        logger.info("GET /v1.0/addresses request for getting all addresses is received with parameters page = " + page + "; size = " + pageSize);
+        logger.info("GET /addresses request for getting all addresses is received with parameters page = " + page + "; size = " + pageSize);
         if (pageSize < 1 || pageSize > 1000) {
             var exception = new ResponseStatusException(HttpStatus.BAD_REQUEST, "Size of page must be in range [1, 1000], but got: " + pageSize);
             logger.info("Incorrect size parameter", exception);
@@ -131,7 +131,7 @@ public class AddressController {
     @PostMapping(consumes = "application/json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void createAddress(@RequestBody Address address) throws AddressExistConflictException, AddressBadRequestException {
-        logger.info("POST /v1.0/addresses request for creating a new address is received");
+        logger.info("POST /addresses request for creating a new address is received");
         service.createAddress(address);
     }
 }

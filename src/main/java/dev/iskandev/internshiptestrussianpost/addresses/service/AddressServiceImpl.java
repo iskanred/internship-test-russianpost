@@ -26,9 +26,6 @@ public class AddressServiceImpl implements AddressService {
         this.repository = repository;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Address getAddressById(UUID id) throws AddressNotFoundException {
         /* Get address by id from repository; if no such address => throw exception */
@@ -40,9 +37,6 @@ public class AddressServiceImpl implements AddressService {
         return addressOptional.get();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void updateAddressById(UUID id, Address address) throws AddressNotFoundException, AddressBadRequestException {
         if (!repository.existsById(id)) {
@@ -61,9 +55,6 @@ public class AddressServiceImpl implements AddressService {
         repository.save(address);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void removeAddressById(UUID id) throws AddressNotFoundException {
         if (!repository.existsById(id)) {
@@ -73,9 +64,6 @@ public class AddressServiceImpl implements AddressService {
         repository.deleteById(id);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<Address> getAddresses(int page, int size) {
         var addresses = repository.findAll();
@@ -92,9 +80,6 @@ public class AddressServiceImpl implements AddressService {
         return addresses.subList(fromIndex, toIndex);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createAddress(Address address) throws AddressExistConflictException, AddressBadRequestException {
         // if input address exists already => throw exception

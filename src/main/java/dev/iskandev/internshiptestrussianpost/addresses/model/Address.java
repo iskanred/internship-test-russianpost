@@ -19,45 +19,45 @@ public class Address {
     @Column(name = "id", unique = true, nullable = false)
     private UUID id;
 
-    @Column(name = "plain_address")
+    @Column(name = "plain_address", nullable = false)
     @JsonProperty("plain_address")
     private String plainAddress;
 
     @Column
     private String instruction;
 
-    @Column(nullable = false)
-    private Integer index;
+    @Column
+    private String index;
 
-    @Column(nullable = false)
+    @Column
     private String region;
 
     @Column
     private String area;
 
-    @Column(nullable = false)
+    @Column
     private String place;
 
-    @Column(nullable = false)
+    @Column
     private String district;
 
-    @Column(nullable = false)
+    @Column
     private String street;
 
-    @Column(nullable = false)
-    private Integer house;
+    @Column
+    private String house;
 
     @Column
     private String letter;
 
     @Column
-    private Integer slash;
+    private String slash;
 
     @Column
-    private Integer corpus;
+    private String corpus;
 
     @Column
-    private Integer building;
+    private String building;
 
     @Column
     private String room;
@@ -69,9 +69,7 @@ public class Address {
      *         {@literal false} otherwise.
      */
     public boolean isIncorrect() {
-        return  Objects.isNull(id) || Objects.isNull(index) || Objects.isNull(region) ||
-                Objects.isNull(place) || Objects.isNull(district) || Objects.isNull(street) ||
-                Objects.isNull(house);
+        return  Objects.isNull(id) || Objects.isNull(plainAddress);
     }
 
     @Override
@@ -129,12 +127,12 @@ public class Address {
     }
 
     @SuppressWarnings("unused")
-    public Integer getIndex() {
+    public String getIndex() {
         return index;
     }
 
     @SuppressWarnings("unused")
-    public void setIndex(Integer index) {
+    public void setIndex(String index) {
         this.index = index;
     }
 
@@ -189,12 +187,12 @@ public class Address {
     }
 
     @SuppressWarnings("unused")
-    public Integer getHouse() {
+    public String getHouse() {
         return house;
     }
 
     @SuppressWarnings("unused")
-    public void setHouse(Integer house) {
+    public void setHouse(String house) {
         this.house = house;
     }
 
@@ -209,32 +207,32 @@ public class Address {
     }
 
     @SuppressWarnings("unused")
-    public Integer getSlash() {
+    public String getSlash() {
         return slash;
     }
 
     @SuppressWarnings("unused")
-    public void setSlash(Integer slash) {
+    public void setSlash(String slash) {
         this.slash = slash;
     }
 
     @SuppressWarnings("unused")
-    public Integer getCorpus() {
+    public String getCorpus() {
         return corpus;
     }
 
     @SuppressWarnings("unused")
-    public void setCorpus(Integer corpus) {
+    public void setCorpus(String corpus) {
         this.corpus = corpus;
     }
 
     @SuppressWarnings("unused")
-    public Integer getBuilding() {
+    public String getBuilding() {
         return building;
     }
 
     @SuppressWarnings("unused")
-    public void setBuilding(Integer building) {
+    public void setBuilding(String building) {
         this.building = building;
     }
 

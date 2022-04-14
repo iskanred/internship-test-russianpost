@@ -1,17 +1,17 @@
 create table if not exists addresses(
     id uuid primary key ,
-    plain_address text ,
+    plain_address text not null ,
     instruction text ,
-    index integer not null ,    -- each address in Russia MUST have index
-    region text not null ,      -- each address in Russia MUST have region
-    area text ,
-    place text not null ,       -- each address in Russia MUST have place
-    district text not null ,    -- each address in Russia MUST have district
-    street text not null ,      -- each address in Russia MUST have street
-    house integer not null ,    -- each address in Russia MUST have house number
-    letter text ,
-    slash integer ,
-    corpus integer ,
-    building integer ,
-    room text
+    index varchar(9) ,
+    region varchar(200) ,
+    area varchar(200) ,
+    place varchar(200) ,
+    district varchar(200) ,
+    street varchar(200) ,
+    house varchar(60) ,
+    letter varchar(2) ,
+    slash varchar(8) ,
+    corpus varchar(8) ,
+    building varchar(8) ,
+    room varchar(60)
 );
