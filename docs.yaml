@@ -1,0 +1,435 @@
+openapi: 3.0.1
+info:
+  title: Internship System API
+  version: v1.0
+servers:
+  - url: 'https://localhost:8080/'
+    description: Generated server url
+tags:
+  - name: test
+    description: >-
+      requests for internship tasks.
+  - name: Address
+    description: >-
+      requests to work with addresses.
+paths:
+  '/v1.0/github/repositories':
+    get:
+      tags:
+        - test
+      summary: Запрос возвращает {count} наиболее полулярных репозиториев с github.com
+      operationId: getRepos
+      parameters:
+        - name: topic
+          in: query
+          description: название темы по которой осуществляется поиск вопросов
+          required: true
+          schema:
+            type: string
+          example: java
+        - name: filter
+          in: query
+          description: признак фильтрации. Пока всегда передаём "popular" для фильтрации по наиболее популярным репозиториям
+          required: true
+          schema:
+            type: string
+            example: popular
+        - name: count
+          in: query
+          description: Количество репозиториев которое нужно получить. Не должно быть больше 100.
+          required: true
+          schema:
+            maximum: 100
+            type: integer
+            format: int64
+            default: '20'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Repos'
+        '500':
+          description: Internal server error
+  /monitoring/ping:
+    get:
+      tags:
+        - test
+      summary: returns 200 if service is available
+      operationId: handle_0
+      responses:
+        '200':
+          description: OK
+  '/v1.0/addresses/{id}':
+    get:
+      tags:
+        - Address
+      summary: Returns Address by its ID
+      operationId: findAddressById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: e6b12ab8-ad09-4546-9e47-543b850718ea
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindAllAddressesRestView'
+        '400':
+          description: Bad request. Check input data
+        '404':
+          description: Address with specified ID not found
+        '500':
+          description: Internal server error
+    put:
+      tags:
+        - Address
+      summary: Client commands to update an Address
+      operationId: update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: 'An identifier of an Address to be updated. In case if not unique or no identifier is provided, an exception is thrown.'
+            format: uuid
+            example: e6b12ab8-ad09-4546-9e47-543b850718ea
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAddressRestCommand'
+        required: true
+      responses:
+        '204':
+          description: Address updated
+        '400':
+          description: Bad request. Check input data
+        '404':
+          description: Address with specified id not found
+        '500':
+          description: Internal server error
+    delete:
+      tags:
+        - Address
+      summary: Client commands to delete an Address
+      operationId: delete_1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: 'An identifier of a Address to be deleted. '
+            format: uuid
+            example: e6b12ab8-ad09-4546-9e47-543b850718ea
+      responses:
+        '204':
+          description: Address deleted
+        '400':
+          description: Bad request. Check input data
+        '404':
+          description: Address with specified id not found
+        '500':
+          description: Internal server error
+  /v1.0/addresses:
+    get:
+      tags:
+        - Address
+      summary: Returns paginated list of all existing Addresses
+      operationId: findAllAddresses
+      parameters:
+        - name: page
+          in: query
+          description: 'Zero-based page number of `size` elements. E.g. 0 page will return first `size` records, 1 page will return records `size`+1..`size`*2, etc.'
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: '0'
+        - name: size
+          in: query
+          description: Number of records to be returned on a single page. Should be in the range from 1 to 1000
+          required: false
+          schema:
+            maximum: 1000
+            type: integer
+            format: int64
+            default: '20'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindAllAddressesRestView'
+        '400':
+          description: Bad request. Check input data
+        '500':
+          description: Internal server error
+    post:
+      tags:
+        - Address
+      summary: Client commands to create a new Address
+      operationId: create_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAddressRestCommand'
+        required: true
+      responses:
+        '204':
+          description: New Address created
+        '400':
+          description: Bad request. Check input data
+        '409':
+          description: Request conflicts with existing data. I.e. if Address with specified Id already exists.
+        '500':
+          description: Internal server error
+components:
+  schemas:
+  
+    Repos:
+      type: object
+      required: 
+        - repositories_list
+      properties:
+        repositories_list: 
+          type: array
+          items:
+            type: object
+            required:
+              - url
+            properties:
+              url:
+                type: string
+                example: https://github.com/streamnative/pulsar
+                description: ссылка на страницу с репозиторием
+
+    FindAllAddressesRestView:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Address entity unique ID
+          format: uuid
+          example: e6b12ab8-ad09-4546-9e47-543b850718ea
+        plain_address:
+          type: string
+          description: Recipient plain address
+          example: Московский 9 Спб
+        instruction:
+          type: string
+          description: Some additional instructions to find recipient
+          example: Вход со стороны Московского проспекта
+        index:
+          type: string
+          description: Recipient postal code
+          example: '190031'
+        region:
+          type: string
+          description: Recipient region
+          example: Ленинградская Область
+        area:
+          type: string
+          description: Recipient city area
+          example: Адмиралтейский район
+        place:
+          type: string
+          description: 'Recipient place of residence name (i.e. city, town, village etc. name)'
+          example: г. Санкт-Петербург
+        district:
+          type: string
+          description: Recipient federal district
+          example: Северо-Западный федеральный округ
+        street:
+          type: string
+          description: Recipient street name
+          example: Московский проспект
+        house:
+          type: string
+          description: Recipient house number
+          example: '9'
+        letter:
+          type: string
+          description: 'Recipient house letter, i.e. in 9A, A is this letter'
+          example: А
+        slash:
+          type: string
+          description: 'Recipient house number after slash, i.e. in 9/1, 1 is this number'
+          example: '1'
+        corpus:
+          type: string
+          description: 'Recipient house corpus, i.e. house 9 corpus 1, 1 is this corpus number'
+          example: '1'
+        building:
+          type: string
+          description: Recipient building number
+          example: '3'
+        room:
+          type: string
+          description: Recipient apartment number
+          example: '1'
+    UpdateAddressRestCommand:
+      required:
+        - plain_address
+      type: object
+      properties:
+        plain_address:
+          type: string
+          description: Plain address
+          example: Московский 9 Спб
+        instruction:
+          type: string
+          description: Instruction
+          example: Вход со стороны Московского проспекта
+        index:
+          maxLength: 9
+          type: string
+          description: Index. Max length 9 symbols
+          example: '190031'
+        region:
+          maxLength: 200
+          type: string
+          description: Region. Max length 200 symbols
+          example: Ленинградская Область
+        area:
+          maxLength: 200
+          type: string
+          description: Area. Max length 200 symbols
+          example: Адмиралтейский район
+        place:
+          maxLength: 200
+          type: string
+          description: Place. Max length 200 symbols
+          example: г. Санкт-Петербург
+        district:
+          maxLength: 200
+          type: string
+          description: District. Max length 200 symbols
+          example: Северо-Западный федеральный округ
+        street:
+          maxLength: 200
+          type: string
+          description: Street. Max length 200 symbols
+          example: Московский проспект
+        house:
+          maxLength: 60
+          type: string
+          description: House. Max length 60 symbols
+          example: '9'
+        letter:
+          maxLength: 2
+          type: string
+          description: Letter. Max length 2 symbols
+          example: А
+        slash:
+          maxLength: 8
+          type: string
+          description: Slash. Max length 8 symbols
+          example: '1'
+        corpus:
+          maxLength: 8
+          type: string
+          description: Corpus. Max length 8 symbols
+          example: '1'
+        building:
+          maxLength: 8
+          type: string
+          description: Building. Max length 8 symbols
+          example: '3'
+        room:
+          maxLength: 60
+          type: string
+          description: Room. Max length 60 symbols
+          example: '1'
+      description: 'Update Address REST command. '
+    CreateAddressRestCommand:
+      required:
+        - id
+        - plain_address
+      type: object
+      properties:
+        id:
+          type: string
+          description: Address unique identifier. It must be randomly generated and provided by a caller. It must ensure uniqueness of Address in the database.
+          format: uuid
+          example: e6b12ab8-ad09-4546-9e47-543b850718ea
+        plain_address:
+          type: string
+          description: Plain address
+          example: Московский 9 Спб
+        instruction:
+          type: string
+          description: Instruction
+          example: Вход со стороны Московского проспекта
+        index:
+          maxLength: 9
+          type: string
+          description: Index. Max length 9 symbols
+          example: '190031'
+        region:
+          maxLength: 200
+          type: string
+          description: Region. Max length 200 symbols
+          example: Ленинградская Область
+        area:
+          maxLength: 200
+          type: string
+          description: Area. Max length 200 symbols
+          example: Адмиралтейский район
+        place:
+          maxLength: 200
+          type: string
+          description: Place. Max length 200 symbols
+          example: г. Санкт-Петербург
+        district:
+          maxLength: 200
+          type: string
+          description: District. Max length 200 symbols
+          example: Северо-Западный федеральный округ
+        street:
+          maxLength: 200
+          type: string
+          description: Street. Max length 200 symbols
+          example: Московский проспект
+        house:
+          maxLength: 60
+          type: string
+          description: House. Max length 60 symbols
+          example: '9'
+        letter:
+          maxLength: 2
+          type: string
+          description: Letter. Max length 2 symbols
+          example: А
+        slash:
+          maxLength: 8
+          type: string
+          description: Slash. Max length 8 symbols
+          example: '1'
+        corpus:
+          maxLength: 8
+          type: string
+          description: Corpus. Max length 8 symbols
+          example: '1'
+        building:
+          maxLength: 8
+          type: string
+          description: Building. Max length 8 symbols
+          example: '3'
+        room:
+          maxLength: 60
+          type: string
+          description: Room. Max length 60 symbols
+          example: '1'
+      description: 'Create Address REST command. '

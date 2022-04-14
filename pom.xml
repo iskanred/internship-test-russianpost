@@ -61,6 +61,12 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <finalName>server</finalName>
+                    <outputDirectory>${basedir}</outputDirectory>
+                    <mainClass>dev.iskandev.internshiptestrussianpost.InternshipTestRussianpostApplication</mainClass>
+                </configuration>
+
             </plugin>
         </plugins>
     </build>
