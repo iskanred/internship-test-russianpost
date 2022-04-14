@@ -1,5 +1,6 @@
 package dev.iskandev.internshiptestrussianpost.addresses.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.DynamicUpdate;
@@ -68,6 +69,7 @@ public class Address {
      * @return {@literal true} if address's state is correct,
      *         {@literal false} otherwise.
      */
+    @JsonIgnore
     public boolean isIncorrect() {
         return  Objects.isNull(id) || Objects.isNull(plainAddress);
     }

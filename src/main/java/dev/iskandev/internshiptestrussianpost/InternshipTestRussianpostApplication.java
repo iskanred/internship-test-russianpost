@@ -16,6 +16,7 @@ public class InternshipTestRussianpostApplication {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
+                .csrf().disable()
                 .requiresChannel(channel ->
                     channel.anyRequest().requiresSecure())
                 .authorizeRequests(authorize ->
